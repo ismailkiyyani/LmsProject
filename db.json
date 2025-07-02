@@ -2,15 +2,43 @@
   "users": [
     {
       "id": "015c",
-      "name": "ismail",
-      "email": "Ismail@gmail.com",
+      "name": "Ismail",
+      "email": "ismail@gmail.com",
       "password": "123456789"
     },
     {
       "id": "0f73",
-      "name": "ismail",
+      "name": "Ismail",
       "email": "ismail@teresol.com",
       "password": "asd123"
     }
-  ]
+  ],
+  "courses": [
+    {
+      "id": "1",
+      "title": "Vue Basics",
+      "description": "Learn Vue fundamentals"
+    },
+    {
+      "id": "2",
+      "title": "Vuex Deep Dive",
+      "description": "Manage state efficiently"
+    },
+    {
+      "id": "3",
+      "title": "Firebase Auth",
+      "description": "Add login/logout to your app"
+    },
+    {
+      "id": "4",
+      "title": "React Basics",
+      "description": "Learn React fundamentals"
+    },
+    {
+      "id": "5",
+      "title": "JavaScript Basics",
+      "description": "Learn JavaScript fundamentals"
+    }
+  ],
+  "enrollments": []
 }

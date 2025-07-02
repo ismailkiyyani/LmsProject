@@ -1,68 +1,153 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import NavBar from '@/components/NavBar.vue'
 
-const router = useRouter()
-const user = ref(null)
-const showWelcome = ref(false)
+const user = JSON.parse(localStorage.getItem('user'))
+const enrolledCourses = ref([])
 
-const logout = () => {
-    localStorage.removeItem('user')
-    router.push('/signin')
-}
-
-onMounted(() => {
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-        user.value = JSON.parse(storedUser)
-
-        // ✅ Show welcome message only if just logged in
-        if (sessionStorage.getItem('justLoggedIn') === 'true') {
-            showWelcome.value = true
-            sessionStorage.removeItem('justLoggedIn')
-
-            setTimeout(() => {
-                showWelcome.value = false
-            }, 5000)
-        }
-    } else {
-        router.push('/signin')
-    }
+onMounted(async () => {
+    const res = await fetch(`http://localhost:3000/enrollments?userId=${user.id}&_expand=course`)
+    enrolledCourses.value = await res.json()
 })
+
+const name = user?.name || 'Student'
+
+// Fake completed count (you can add real data later)
+const completedCourses = ref(1)
 </script>
 
-
 <template>
-    <div class="home-container">
-        <NavBar v-if="!showWelcome" />
-        <template v-if="user">
-            <h1 v-if="showWelcome">Welcome, {{ user.name }}!</h1>
-            <button v-if="showWelcome" @click="logout">Logout</button>
-        </template>
-        <p v-else>Redirecting to sign in...</p>
+    <div class="dashboard">
+        <!-- 👋 Welcome -->
+        <h2>Welcome back, {{ name }} 👋</h2>
+
+        <!-- 📊 Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{{ enrolledCourses.length }}</h3>
+                <p>Courses Enrolled</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ completedCourses }}</h3>
+                <p>Courses Completed</p>
+            </div>
+            <div class="stat-card">
+                <h3>
+                    {{
+                        enrolledCourses.length
+                            ? Math.floor((completedCourses / enrolledCourses.length) * 100)
+                            : 0
+                    }}%
+                </h3>
+                <p>Progress</p>
+            </div>
+        </div>
+
+        <!-- 📈 Progress bar -->
+        <div class="progress-section">
+            <label>Overall Progress</label>
+            <div class="progress-bar">
+                <div class="progress-fill"
+                    :style="{ width: enrolledCourses.length ? (completedCourses / enrolledCourses.length) * 100 + '%' : '0%' }">
+                </div>
+            </div>
+        </div>
+
+        <!-- 🕓 Recent Enrollments -->
+        <div class="recent-section">
+            <h3>Recently Enrolled</h3>
+            <ul class="course-list">
+                <li v-for="item in enrolledCourses.slice(-3).reverse()" :key="item.id" class="course-card">
+                    <h4>{{ item.course.title }}</h4>
+                    <p>{{ item.course.description }}</p>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 🚀 Quick Actions -->
+        <div class="quick-actions">
+            <router-link to="/profile" class="action-btn">🎓 My Courses</router-link>
+            <router-link to="/courses" class="action-btn">➕ Enroll New</router-link>
+            <router-link to="/settings" class="action-btn">⚙️ Settings</router-link>
+        </div>
     </div>
 </template>
 
 <style scoped>
-.home-container {
+.dashboard {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.stats-grid {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background: #111;
+    color: #fff;
+    flex: 1;
+    min-width: 160px;
+    padding: 20px;
+    border-radius: 10px;
     text-align: center;
-    margin-top: 100px;
-    font-family: Arial, sans-serif;
 }
 
-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #ff4d4f;
+.progress-section {
+    margin: 20px 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 18px;
+    background: #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #2ecc71;
+    transition: width 0.4s ease;
+}
+
+.recent-section {
+    margin-top: 30px;
+}
+
+.course-list {
+    list-style: none;
+    padding: 0;
+}
+
+.course-card {
+    background: #f4f4f4;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.quick-actions {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.action-btn {
+    background: #0f0f0f;
     color: white;
-    border: none;
+    padding: 10px 16px;
     border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.3s;
 }
 
-button:hover {
-    background-color: #d9363e;
+.action-btn:hover {
+    background: #222;
 }
 </style>
