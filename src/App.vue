@@ -28,12 +28,13 @@ const showLayout = computed(() => !hideLayoutOn.includes(route.path))
 :root {
   --sidebar-width: 200px;
   --sidebar-width-collapsed: 60px;
+  background-color: rgb(242, 242, 242);
 }
 
 .wrapper {
   padding-top: 60px;
   /* height of navbar */
-  background-color: var(--bg-color);
+  background-color: rgb(242, 242, 242);
   min-height: 100vh;
 }
 

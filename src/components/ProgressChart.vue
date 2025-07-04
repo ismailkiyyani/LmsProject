@@ -1,14 +1,9 @@
 <script setup>
-import { Pie } from 'vue-chartjs'
-import {
-    Chart as ChartJS,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement
-} from 'chart.js'
-import { reactive, watch } from 'vue'
+import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js'
+import { Chart } from 'vue-chartjs'
+import { computed, watch } from 'vue'
 
+// Register only needed Chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement)
 
 const props = defineProps({
@@ -16,35 +11,38 @@ const props = defineProps({
     totalCount: Number
 })
 
-const chartData = reactive({
+// Dynamically compute chart data based on props
+const chartData = computed(() => ({
     labels: ['Enrolled', 'Remaining'],
     datasets: [
         {
             data: [props.enrolledCount, props.totalCount - props.enrolledCount],
-            backgroundColor: ['#0f0f0f', '#ccc']
+            backgroundColor: ['#z', '#e0e0e0'], // Green & Grey
+            borderWidth: 1
         }
     ]
-})
+}))
 
-watch(
-    () => [props.enrolledCount, props.totalCount],
-    ([newEnrolled, newTotal]) => {
-        chartData.datasets[0].data = [newEnrolled, newTotal - newEnrolled]
-    }
-)
-
-const options = {
+const chartOptions = {
     responsive: true,
     plugins: {
-        legend: { position: 'bottom' },
+        legend: {
+            position: 'bottom'
+        },
         title: {
             display: true,
             text: 'Course Enrollment Progress'
+        },
+        animation: {
+            duration: 800,
+            easing: 'easeOutCubic'
         }
+
     }
 }
 </script>
 
 <template>
-    <Pie :data="chartData" :options="options" />
+    <Chart type="pie" :data="chartData" :options="chartOptions" />
 </template>
+<style scoped></style>

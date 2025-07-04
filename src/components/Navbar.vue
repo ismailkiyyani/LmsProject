@@ -116,20 +116,20 @@ const logout = () => {
 .logout-btn:focus,
 .theme-toggle:focus {
     background-color: var(--accent-color-hover);
-    color: white;
+    color: rgb(117, 115, 115);
     outline: none;
 }
 
 .active-link {
     font-weight: bold;
     background-color: var(--accent-color);
-    color: white !important;
+    color: rgb(0, 0, 0) !important;
     border-radius: 4px;
 }
 
 .theme-toggle {
     background: var(--accent-color);
-    color: white;
+    color: rgb(20, 10, 10);
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 6px 12px;
@@ -143,7 +143,7 @@ const logout = () => {
     font-size: 24px;
     background: none;
     border: none;
-    color: var(--text-color);
+    color: rgb(182, 176, 159);
     cursor: pointer;
 }
 
